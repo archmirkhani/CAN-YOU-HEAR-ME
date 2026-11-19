@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CAN YOU HEAR ME?! 들려? 내 말 들려?</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff1e0;--ink:#3b2f4a;--mint:#8fdccf;--yel:#ffd23f;--red:#ff5a5f;--pink:#ffa6cf;--blue:#6ec1ff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a2236}}
+:root[data-theme="dark"]{--bg:#2a2236}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);font-family:'Jua','Malgun Gothic',sans-serif;user-select:none;touch-action:none;color:var(--ink)}
+#stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center;border-radius:28px;overflow:hidden;background:radial-gradient(circle at 20px 20px,#ffd2a8 3px,transparent 4px) 0 0/40px 40px,#ffe9d3}
+#stage>*{position:absolute}
+button{font-family:inherit;cursor:pointer;color:var(--ink)}
+.btn{padding:12px 22px;font-size:28px;border:5px solid var(--ink);border-radius:18px;box-shadow:0 6px 0 var(--ink);background:#fff;transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink)}
+#title{left:30px;top:16px;font-size:42px;line-height:1;text-shadow:3px 3px 0 var(--pink)}
+#title small{display:block;font-size:20px;text-shadow:none;margin-top:4px}
+#trk{right:30px;top:24px;font-size:20px;display:flex;gap:8px;align-items:center}
+#trk i{width:20px;height:20px;border-radius:50%;border:4px solid var(--ink);background:#fff}
+#trk i.f{background:var(--yel)}
+#robot{left:14px;top:150px;width:236px;height:330px;cursor:pointer;animation:bob 2s ease-in-out infinite}
+#robot.excited{animation:jump .35s ease-in-out infinite}
+#robot.sad{animation:none;transform:rotate(-6deg) translateY(10px)}
+@keyframes bob{50%{transform:translateY(-8px)}}
+@keyframes jump{50%{transform:translateY(-26px) rotate(4deg)}}
+.blink{animation:bl .8s steps(2) infinite}
+@keyframes bl{50%{opacity:.2}}
+#bubble{left:272px;top:50px;max-width:700px;min-height:46px;background:#fff;border:5px solid var(--ink);border-radius:24px;padding:10px 22px;font-size:23px;line-height:1.3;z-index:5}
+#bubble:before{content:"";position:absolute;left:-22px;top:26px;border:12px solid transparent;border-right:14px solid var(--ink)}
+#bubble.pop{animation:pop .3s}
+@keyframes pop{0%{transform:scale(.85)}60%{transform:scale(1.05)}}
+#ant{left:1010px;top:60px}
+#console{left:260px;top:150px;width:1000px;height:540px;border:6px solid var(--ink);border-radius:36px;background:repeating-linear-gradient(90deg,#8fdccf 0 40px,#86d3c6 40px 80px);box-shadow:0 10px 0 var(--ink),inset 0 0 0 8px #ffffff55}
+#leds{left:300px;top:160px;display:flex;gap:12px}
+#leds b{width:16px;height:16px;border-radius:50%;border:3px solid var(--ink);background:var(--red);animation:bl 1.2s steps(2) infinite}
+#leds b:nth-child(2n){background:var(--yel);animation-delay:.3s}#leds b:nth-child(3n){background:var(--blue);animation-delay:.6s}
+[data-s="1"] #leds b{animation-duration:.3s}
+#screenwrap{left:300px;top:190px;width:520px;height:220px;border:6px solid var(--ink);border-radius:22px;overflow:hidden;background:#1d1a2e}
+#scr{position:absolute;left:0;top:0}
+#scrtxt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:34px;color:#9fffd0;text-shadow:0 0 12px #3fe;pointer-events:none;line-height:1.3}
+#scrtxt small{font-size:20px}
+#knobbox{left:860px;top:190px;width:170px;text-align:center;font-size:24px;opacity:.4;transition:opacity .3s}
+[data-s="2"] #knobbox{opacity:1}
+#knob{cursor:grab;display:block;margin:0 auto}
+#bars{display:flex;gap:6px;justify-content:center;margin-top:10px}
+#bars i{width:22px;height:22px;border-radius:6px;border:4px solid var(--ink);background:#fff}
+#bars i.on{background:#5fe08a}
+#phone{left:1060px;top:190px;width:170px;cursor:pointer}
+#phone .rc{transform-origin:85px 80px;transition:transform .3s}
+#phone.ring .rc{animation:ringg .25s infinite}
+#phone.up .rc{transform:translate(-30px,-40px) rotate(-30deg)}
+@keyframes ringg{25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+#hint{left:1060px;top:345px;width:170px;text-align:center;font-size:24px;animation:bob .6s infinite;display:none}
+[data-s="1"] #hint{display:block}
+.tg{top:652px;width:54px;height:28px;border:5px solid var(--ink);border-radius:16px;background:#fff;cursor:pointer;transition:background .15s;z-index:2}
+.tg:after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:var(--ink);transition:left .15s}
+.tg.on{background:var(--pink)}.tg.on:after{left:29px}
+#msg,#tools,#send{opacity:0;pointer-events:none;transform:translateY(24px);transition:.35s}
+[data-s="3"] #msg,[data-s="3"] #tools,[data-s="3"] #send{opacity:1;pointer-events:auto;transform:none}
+#msg{left:300px;top:430px;width:920px;height:92px;border:6px solid var(--ink);border-radius:24px;background:#fff;font-size:46px;display:flex;align-items:center;justify-content:center;gap:14px;box-sizing:border-box}
+.slot{min-width:120px;text-align:center;border-bottom:6px dashed var(--red);color:var(--red);display:inline-block}
+.slot.glitch{animation:gl .15s steps(2) infinite}
+@keyframes gl{50%{transform:translate(3px,-2px);color:var(--blue)}}
+.slot.fill{border-bottom-style:solid;color:var(--ink);border-color:var(--pink);animation:pop .35s}
+#tools{left:300px;top:548px;display:flex;gap:14px}
+#tools.busy .btn{opacity:.5;pointer-events:none}
+#replay{background:var(--blue)}
+#choices{display:flex;gap:14px}#choices.wait{opacity:.25;pointer-events:none}
+.ch{background:var(--pink)}.ch.on{background:var(--yel);animation:wob .4s}
+@keyframes wob{25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}
+#send{left:1050px;top:548px;width:180px;height:116px;font-size:42px;border:6px solid var(--ink);border-radius:50%/60%;background:var(--red);color:#fff;box-shadow:0 10px 0 #8d2430,0 0 0 6px var(--ink);transition:.1s}
+#send small{display:block;font-size:18px}
+#send:active:not(:disabled){transform:translateY(9px);box-shadow:0 1px 0 #8d2430,0 0 0 6px var(--ink)}
+#send:disabled{background:#bbb;box-shadow:0 10px 0 #888,0 0 0 6px var(--ink);cursor:not-allowed}
+.ov{left:260px;top:150px;width:1000px;height:540px;border:6px solid var(--ink);border-radius:36px;box-sizing:border-box;opacity:0;pointer-events:none;transform:scale(.92);transition:.35s;z-index:6}
+[data-s="5"] #scene,[data-s="6"] #reveal{opacity:1;pointer-events:auto;transform:none}
+#scene{background:repeating-linear-gradient(45deg,#fff6c9 0 30px,#fff0b0 30px 60px)}
+#belt{left:30px;top:330px;width:620px;height:46px;border:6px solid var(--ink);border-radius:23px;background:repeating-linear-gradient(90deg,#5b4a72 0 24px,#8a76a8 24px 48px);animation:belt .5s linear infinite}
+@keyframes belt{to{background-position:48px 0}}
+.gear{width:54px;height:54px;border:8px dashed var(--ink);border-radius:50%;animation:spin 1.2s linear infinite;top:385px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#cap{left:20px;top:270px;height:56px;padding:0 22px;border:5px solid var(--ink);border-radius:30px;background:#fff;font-size:26px;display:flex;align-items:center;white-space:nowrap}
+#scene h2{left:30px;top:24px;margin:0;font-size:40px}
+#rv{left:700px;top:150px;width:260px;height:260px}
+#rv.hurt{animation:shake .12s 12}#rv.happy{animation:jump .4s 4}
+@keyframes shake{50%{transform:translateX(8px)}}
+#rbub{left:560px;top:40px;width:340px;background:#fff;border:5px solid var(--ink);border-radius:22px;padding:10px 16px;font-size:28px;text-align:center;opacity:0;transition:opacity .3s}
+#reveal{background:#fffdf6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
+#reveal h2{margin:0;font-size:44px;text-shadow:3px 3px 0 var(--yel)}
+.cmp{display:flex;align-items:center;gap:24px}
+.pn{width:400px;padding:16px 10px;border:5px solid var(--ink);border-radius:22px;text-align:center;font-size:38px;background:#fff}
+.pn small{display:block;font-size:20px;margin-bottom:6px}
+mark{padding:0 8px;border-radius:10px;border:4px solid var(--ink)}
+mark.g{background:#8ff0a8}mark.r{background:#ff9aa0;animation:wob .5s 2}
+.pn.d{animation:pop .5s}
+.fxrow{display:flex;align-items:center;gap:20px;max-width:880px}
+#rvs{width:130px;height:130px;flex:none}
+#effect{font-size:28px;line-height:1.4}
+#mini{font-size:20px;opacity:.8}
+#again{background:var(--yel)}
+#start{inset:0;background:#ffe9d3ee;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;z-index:9;opacity:0;pointer-events:none;transition:.3s}
+[data-s="0"] #start{opacity:1;pointer-events:auto}
+#start h1{font-size:84px;margin:0;text-shadow:5px 5px 0 var(--pink);line-height:1}
+#start p{font-size:30px;margin:0}
+#start .btn{font-size:40px;background:var(--yel)}
+@media(prefers-reduced-motion:reduce){#robot,.gear,#belt{animation:none}}
+</style></head>
+<body>
+<div id="stage" data-s="0">
+ <div id="title">CAN YOU HEAR ME?!<small>들려? 내 말 들려?</small></div>
+ <div id="trk">발견한 결말 <i></i><i></i><i></i></div>
+
+ <svg id="robot" viewBox="0 0 220 300" aria-label="로봇 조수">
+  <line x1="110" y1="14" x2="110" y2="48" stroke="#3b2f4a" stroke-width="6"/>
+  <circle class="blink" cx="110" cy="12" r="11" fill="#ff5a5f" stroke="#3b2f4a" stroke-width="5"/>
+  <rect x="30" y="46" width="160" height="120" rx="34" fill="#ffd23f" stroke="#3b2f4a" stroke-width="6"/>
+  <rect x="48" y="64" width="124" height="84" rx="24" fill="#2b2342"/>
+  <g id="rf"></g>
+  <rect x="62" y="172" width="96" height="80" rx="24" fill="#ffa6cf" stroke="#3b2f4a" stroke-width="6"/>
+  <circle cx="110" cy="212" r="14" fill="#fff" stroke="#3b2f4a" stroke-width="5"/>
+  <path d="M62 195L22 228M158 195L198 228" stroke="#3b2f4a" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="82" cy="274" r="16" fill="#6ec1ff" stroke="#3b2f4a" stroke-width="5"/><circle cx="138" cy="274" r="16" fill="#6ec1ff" stroke="#3b2f4a" stroke-width="5"/>
+ </svg>
+ <div id="bubble">…</div>
+
+ <svg id="ant" width="200" height="90" viewBox="0 0 200 90"><path d="M40 90L10 12M120 90L170 6" stroke="#3b2f4a" stroke-width="6" stroke-linecap="round"/><circle class="blink" cx="10" cy="10" r="9" fill="#ff5a5f" stroke="#3b2f4a" stroke-width="4"/><circle cx="170" cy="6" r="9" fill="#6ec1ff" stroke="#3b2f4a" stroke-width="4"/></svg>
+
+ <div id="console"></div>
+ <div id="leds"><b></b><b></b><b></b><b></b><b></b><b></b></div>
+ <div id="screenwrap"><canvas id="scr" width="520" height="220"></canvas><div id="scrtxt"></div></div>
+
+ <div id="knobbox">
+  <svg id="knob" width="150" height="150" viewBox="0 0 150 150" aria-label="주파수 다이얼">
+   <circle cx="75" cy="75" r="68" fill="#ffd23f" stroke="#3b2f4a" stroke-width="6"/>
+   <circle cx="75" cy="75" r="46" fill="#fff3b8" stroke="#3b2f4a" stroke-width="4"/>
+   <g id="kp"><line x1="75" y1="75" x2="75" y2="16" stroke="#ff5a5f" stroke-width="10" stroke-linecap="round"/><circle cx="75" cy="20" r="7" fill="#fff" stroke="#3b2f4a" stroke-width="3"/></g>
+  </svg>
+  주파수
+  <div id="bars"><i></i><i></i><i></i><i></i><i></i></div>
+ </div>
+
+ <div id="hint">▼ 눌러서 받기!</div>
+ <svg id="phone" viewBox="0 0 170 150" aria-label="전화기">
+  <rect x="10" y="80" width="150" height="62" rx="20" fill="#ff7a8a" stroke="#3b2f4a" stroke-width="6"/>
+  <circle cx="85" cy="112" r="20" fill="#fff" stroke="#3b2f4a" stroke-width="5"/><circle cx="85" cy="112" r="6" fill="#3b2f4a"/>
+  <g class="rc"><path d="M20 64Q20 28 50 30L120 30Q150 28 150 64" fill="none" stroke="#3b2f4a" stroke-width="30" stroke-linecap="round"/><path d="M20 64Q20 28 50 30L120 30Q150 28 150 64" fill="none" stroke="#ffd23f" stroke-width="18" stroke-linecap="round"/></g>
+ </svg>
+
+ <div class="tg" style="left:300px"></div><div class="tg" style="left:372px"></div><div class="tg" style="left:444px"></div><div class="tg" style="left:516px"></div>
+
+ <div id="msg">너 정말 <span class="slot glitch" id="slot">▒▒▒</span> 사람이야!</div>
+ <div id="tools"><button class="btn" id="replay">🔊 다시 듣기</button><div id="choices" class="wait"></div></div>
+ <button id="send" disabled>SEND<small>보내기</small></button>
+
+ <div id="scene" class="ov">
+  <h2>배달 중…</h2><div id="belt"></div>
+  <div class="gear" style="left:30px"></div><div class="gear" style="left:300px"></div><div class="gear" style="left:580px"></div>
+  <div id="cap"></div>
+  <svg id="rv" viewBox="0 0 220 220"></svg><div id="rbub"></div>
+ </div>
+
+ <div id="reveal" class="ov">
+  <h2>진실 공개!</h2>
+  <div class="cmp"><div class="pn"><small>원래 메시지</small><span id="orig"></span></div><div style="font-size:50px">→</div><div class="pn d"><small>전달된 메시지</small><span id="deliv"></span></div></div>
+  <div class="fxrow"><svg id="rvs" viewBox="0 0 220 220"></svg><div id="effect"></div></div>
+  <div id="mini">말은 전달되는 사이에 바뀔 수 있어요. 작은 오해도 마음에 닿아요.</div>
+  <button class="btn" id="again">↻ 다시 전화받기</button>
+ </div>
+
+ <div id="start"><h1>CAN YOU<br>HEAR ME?!</h1><p>들려? 내 말 들려? — 소리를 켜고 시작하세요</p><button class="btn" id="go">☎ 출근하기</button></div>
+</div>
+
+<script>
+/* ===== 기본 유틸 ===== */
+const $=s=>document.querySelector(s), stage=$('#stage'), wait=ms=>new Promise(r=>setTimeout(r,ms));
+let SC=1;
+function fit(){SC=Math.min(innerWidth/1280,innerHeight/720);stage.style.transform=`translate(-50%,-50%) scale(${SC})`}
+addEventListener('resize',fit);fit();
+
+/* ===== 효과음 (Web Audio) ===== */
+let AC,noiseG;
+function initAudio(){
+  if(AC){AC.resume();return}
+  AC=new (window.AudioContext||window.webkitAudioContext)();
+  const b=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate),d=b.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const n=AC.createBufferSource();n.buffer=b;n.loop=true;
+  noiseG=AC.createGain();noiseG.gain.value=0;n.connect(noiseG).connect(AC.destination);n.start();
+}
+function beep(f=600,dur=.12,type='square',vol=.1,slide=0){
+  if(!AC)return;const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,t);if(slide)o.frequency.linearRampToValueAtTime(f+slide,t+dur);
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  o.connect(g).connect(AC.destination);o.start();o.stop(t+dur);
+}
+const seq=(a,type,vol,gap=90,dur=.15)=>a.forEach((f,i)=>setTimeout(()=>beep(f,dur,type,vol),i*gap));
+const sfx={
+  click:()=>beep(520,.08,'square',.1), tick:()=>beep(900,.03,'triangle',.08),
+  ring:()=>{beep(880,.1);setTimeout(()=>beep(660,.1),130);setTimeout(()=>beep(880,.1),400);setTimeout(()=>beep(660,.1),530)},
+  ok:()=>seq([523,659,784,1047],'triangle',.14), bad:()=>seq([300,220,160],'sawtooth',.1,140,.2),
+  boing:()=>beep(200,.25,'sine',.2,400)
+};
+function setNoise(v){if(noiseG)noiseG.gain.setTargetAtTime(v*.12,AC.currentTime,.05)}
+
+/* ===== 한국어 음성 합성 ===== */
+const hasTTS='speechSynthesis' in window; let koVoice=null;
+function loadVoices(){if(hasTTS)koVoice=speechSynthesis.getVoices().find(v=>/^ko/i.test(v.lang))||null}
+if(hasTTS){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
+function speak(t,o={}){return new Promise(res=>{
+  let done=false;const fin=()=>{if(!done){done=true;res()}};
+  if(!hasTTS||!koVoice){setTimeout(fin,600+t.length*170);return}   // 음성 미지원: 자막만
+  try{const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.voice=koVoice;u.rate=o.rate||1;u.pitch=o.pitch||1;u.volume=o.vol??1;
+    u.onend=fin;u.onerror=fin;speechSynthesis.speak(u);setTimeout(fin,3000+t.length*300)}catch(e){fin()}
+})}
+
+/* ===== 게임 데이터 (통화를 추가하려면 CALLS 배열에 항목을 늘리면 됨) ===== */
+const ORIG='멋진';
+const OPTS=[
+ {w:'이상한',m:'hurt',fx:'수신자는 “내가 이상한 사람인가…” 하며 한참 말이 없었어요. 한 단어가 하루를 무겁게 만들었어요.'},
+ {w:'멋진',m:'happy',fx:'정확하게 전달됐어요! 수신자는 하루 종일 기분이 좋았고, 용기를 내서 발표를 신청했어요.'},
+ {w:'웃긴',m:'confused',fx:'칭찬인지 놀림인지 알 수 없어서, 수신자는 하루 종일 그 말만 곱씹었어요.'}
+];
+const G={step:0,v:.1,t:.6,lock:0,choice:null,seen:new Set(),ring:null,playing:false,glitch:false};
+const setStep=n=>{G.step=n;stage.dataset.s=n};
+
+/* ===== 로봇 / 수신자 표정 ===== */
+const rb=$('#robot');
+function robot(m){
+  const c='stroke="#7fffe0" stroke-width="7" stroke-linecap="round" fill="none"',f='fill="#7fffe0"';
+  const M={idle:`<circle cx="85" cy="98" r="9" ${f}/><circle cx="135" cy="98" r="9" ${f}/><path d="M95 122Q110 132 125 122" ${c}/>`,
+   excited:`<path d="M72 104Q85 84 98 104M122 104Q135 84 148 104" ${c}/><ellipse cx="110" cy="128" rx="14" ry="10" ${f}/>`,
+   confused:`<circle cx="85" cy="98" r="13" ${f}/><circle cx="135" cy="98" r="6" ${f}/><path d="M88 128q8 -10 16 0t16 0t16 0" ${c}/>`,
+   sad:`<circle cx="85" cy="100" r="9" ${f}/><circle cx="135" cy="100" r="9" ${f}/><path d="M92 134Q110 114 128 134" ${c}/>`};
+  $('#rf').innerHTML=M[m==='happy'?'excited':m]||M.idle;rb.setAttribute('class',m);
+}
+function rcv(m){
+  const k='stroke="#3b2f4a" stroke-width="7" stroke-linecap="round" fill="none"';
+  const E={idle:'<circle cx="85" cy="105" r="9"/><circle cx="135" cy="105" r="9"/>',
+   happy:`<path d="M72 110Q85 92 98 110M122 110Q135 92 148 110" ${k}/>`,
+   hurt:`<circle cx="85" cy="108" r="9"/><circle cx="135" cy="108" r="9"/><path d="M68 92L98 100M152 92L122 100" ${k}/><path d="M85 122q-7 18 0 24q7 -6 0 -24" fill="#6ec1ff"/>`,
+   confused:`<circle cx="85" cy="105" r="13"/><circle cx="135" cy="105" r="6"/><path d="M118 88Q135 80 152 90" ${k}/>`};
+  const Mo={idle:`<path d="M95 142Q110 152 125 142" ${k}/>`,
+   happy:'<path d="M85 135Q110 172 135 135Z" fill="#ff7a8a" stroke="#3b2f4a" stroke-width="6" stroke-linejoin="round"/>',
+   hurt:`<path d="M90 154Q110 130 130 154" ${k}/>`,confused:`<path d="M88 146q8 -10 16 0t16 0t16 0" ${k}/>`};
+  const X={happy:'<circle cx="60" cy="130" r="12" fill="#ff9ecb"/><circle cx="160" cy="130" r="12" fill="#ff9ecb"/><text x="165" y="50" font-size="40" fill="#ffd23f">★</text>',
+   confused:'<text x="168" y="58" font-size="46" fill="#ff5a5f">?</text>',hurt:'',idle:''};
+  return `<ellipse cx="58" cy="44" rx="24" ry="32" fill="#b8a4ff" stroke="#3b2f4a" stroke-width="6"/><ellipse cx="162" cy="44" rx="24" ry="32" fill="#b8a4ff" stroke="#3b2f4a" stroke-width="6"/><circle cx="110" cy="118" r="88" fill="#c9b8ff" stroke="#3b2f4a" stroke-width="6"/><g fill="#3b2f4a">${E[m]}</g>${Mo[m]}${X[m]}`;
+}
+function say(t){const b=$('#bubble');b.textContent=t;b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')}
+const scrtxt=h=>$('#scrtxt').innerHTML=h;
+
+/* ===== 신호 화면 (Canvas) ===== */
+const cv=$('#scr'),cx=cv.getContext('2d'),bars=[...document.querySelectorAll('#bars i')];let ph=0,last=0;
+function draw(q){
+  const W=520,H=220;cx.fillStyle='#1d1a2e';cx.fillRect(0,0,W,H);
+  cx.strokeStyle='#7fffe01f';cx.lineWidth=1;cx.beginPath();
+  for(let x=0;x<=W;x+=40){cx.moveTo(x,0);cx.lineTo(x,H)}for(let y=0;y<=H;y+=40){cx.moveTo(0,y);cx.lineTo(W,y)}cx.stroke();
+  cx.strokeStyle=q>.9?'#7fffa0':q>.5?'#ffd23f':'#ff7a7a';cx.lineWidth=4;cx.lineJoin='round';cx.beginPath();
+  for(let x=0;x<=W;x+=4){
+    const a=Math.sin(x*(.02+G.v*.05)+ph)*(30+60*q)*Math.sin(x/W*Math.PI),n=(Math.random()-.5)*(1-q)*120,y=H/2+a+n;
+    x?cx.lineTo(x,y):cx.moveTo(x,y)}
+  cx.stroke();
+}
+function loop(t){
+  const dt=Math.min(.05,(t-last)/1000);last=t;ph+=dt*6;let q=.15;
+  if(G.step===2){
+    q=Math.max(0,1-Math.abs(G.v-G.t)/.3);setNoise(1-q);
+    bars.forEach((b,i)=>b.classList.toggle('on',i<Math.ceil(q*5-.01)));
+    if(q>.93){G.lock+=dt;if(G.lock>.6){G.lock=-99;locked()}}else if(G.lock>=0)G.lock=0;
+  }else if(G.step===3)q=G.glitch?.3:.9;else if(G.step>=5)q=1;
+  draw(q);requestAnimationFrame(loop);
+}
+
+/* ===== 다이얼 드래그 ===== */
+const kn=$('#knob');let drag=null;
+function setKnob(){$('#kp').setAttribute('transform',`rotate(${-135+270*G.v} 75 75)`)}
+kn.addEventListener('pointerdown',e=>{if(G.step!==2)return;kn.setPointerCapture(e.pointerId);drag={x:e.clientX,v:G.v}});
+kn.addEventListener('pointermove',e=>{
+  if(!drag)return;const nv=Math.max(0,Math.min(1,drag.v+(e.clientX-drag.x)/(SC*320)));
+  if(Math.floor(nv*24)!==Math.floor(G.v*24))sfx.tick();
+  G.v=nv;setKnob();
+  if(Math.abs(G.v-G.t)<.18&&!G.near){G.near=1;say('오! 파형이 얌전해지고 있어! 조금만 더!')}
+});
+['pointerup','pointercancel'].forEach(ev=>kn.addEventListener(ev,()=>drag=null));
+
+/* ===== 게임 흐름 ===== */
+function newCall(){
+  clearInterval(G.ring);speechSynthesis&&speechSynthesis.cancel();
+  G.choice=null;G.v=.1;G.lock=0;G.near=0;G.glitch=false;G.playing=false;
+  do{G.t=.35+Math.random()*.55}while(Math.abs(G.t-G.v)<.3);
+  setKnob();
+  const box=$('#choices');box.innerHTML='';box.classList.add('wait');
+  [...OPTS].sort(()=>Math.random()-.5).forEach(c=>{const b=document.createElement('button');b.className='btn ch';b.textContent=c.w;b.onclick=()=>pick(c,b);box.appendChild(b)});
+  const s=$('#slot');s.textContent='▒▒▒';s.className='slot glitch';$('#send').disabled=true;$('#tools').classList.remove('busy');
+  $('#phone').className.baseVal='';$('#phone').classList.add('ring');
+  setStep(1);scrtxt('📞 띠리링~<br><small>INCOMING CALL…</small>');
+  robot('excited');say('앗! 전화다 전화! 빨간 수화기를 눌러서 받아줘!');
+  sfx.ring();G.ring=setInterval(sfx.ring,1700);
+}
+function answer(){
+  if(G.step!==1)return;clearInterval(G.ring);sfx.click();
+  $('#phone').classList.remove('ring');$('#phone').classList.add('up');
+  setStep(2);scrtxt('INCOMING CALL…');robot('confused');
+  say('치지직… 연결이 엉망이야! 다이얼을 좌우로 드래그해서 주파수를 맞춰줘!');
+  setTimeout(()=>{if(G.step===2)scrtxt('')},1300);
+}
+async function locked(){
+  setNoise(0);sfx.ok();robot('excited');say('잡았다! 신호가 선명해졌어! 잘 들어봐…');scrtxt('CONNECTED ✔');
+  await wait(1100);scrtxt('');setStep(3);await playBroken(true);
+}
+async function playBroken(first){
+  if(G.playing)return;G.playing=true;$('#tools').classList.add('busy');robot('confused');
+  if(!hasTTS||!koVoice)say('이 브라우저는 한국어 음성이 없어서 자막으로 보여줄게! 지직…');
+  else say('지지직… 잘 들어봐!');
+  await speak('너 정말',{rate:.95});
+  G.glitch=true;setNoise(1);beep(1200,.5,'sawtooth',.08,-900);
+  await speak(ORIG,{vol:.18,rate:1.5,pitch:1.9});          // 잡음에 묻힌 진짜 단어 (작은 소리)
+  G.glitch=false;setNoise(.04);
+  await speak('사람이야!');setNoise(0);
+  G.playing=false;$('#tools').classList.remove('busy');$('#choices').classList.remove('wait');
+  robot('idle');say(first?'빈칸에 들어갈 말은? 아래 단어 중 하나를 골라줘!':'다시 들어도 헷갈리지? 하나를 골라봐!');
+}
+function pick(c,b){
+  if(G.step!==3)return;G.choice=c;document.querySelectorAll('.ch').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const s=$('#slot');s.textContent=c.w;s.className='slot';void s.offsetWidth;s.classList.add('fill');
+  sfx.boing();$('#send').disabled=false;robot('confused');say('흠… 정말 그 말이었어? 확신이 있으면 SEND를 꾹!');
+}
+async function send(){
+  if(!G.choice||G.step!==3)return;speechSynthesis&&speechSynthesis.cancel();
+  const c=G.choice,line=`너 정말 ${c.w} 사람이야!`;
+  sfx.boing();setStep(5);robot('excited');say('발송 시작! 컨베이어야, 부탁해~');
+  $('#rv').innerHTML=rcv('idle');$('#rv').setAttribute('class','');$('#rbub').style.opacity=0;
+  const cap=$('#cap');cap.textContent=line;cap.style.transition='none';cap.style.left='20px';cap.style.opacity=1;cap.style.transform='none';void cap.offsetWidth;
+  cap.style.transition='left 3s linear';cap.style.left='370px';
+  const tk=setInterval(()=>beep(300+Math.random()*200,.05,'square',.06),220);
+  await wait(3100);clearInterval(tk);
+  cap.style.transition='.3s';cap.style.opacity=0;cap.style.transform='scale(.3)';
+  $('#rv').innerHTML=rcv(c.m);$('#rv').setAttribute('class',c.m);
+  const bb=$('#rbub');bb.textContent=line;bb.style.opacity=1;
+  c.m==='happy'?sfx.ok():c.m==='hurt'?sfx.bad():beep(400,.3,'sine',.15,200);
+  robot(c.m==='happy'?'excited':c.m==='hurt'?'sad':'confused');
+  await speak(line,{pitch:c.m==='happy'?1.5:c.m==='hurt'?.6:1.1,rate:c.m==='hurt'?.8:c.m==='happy'?1.1:.9});
+  await wait(1800);reveal(c);
+}
+function reveal(c){
+  G.seen.add(c.w);setStep(6);
+  $('#orig').innerHTML=`너 정말 <mark class="g">${ORIG}</mark> 사람이야!`;
+  $('#deliv').innerHTML=`너 정말 <mark class="${c.w===ORIG?'g':'r'}">${c.w}</mark> 사람이야!`;
+  $('#effect').textContent=c.fx;$('#rvs').innerHTML=rcv(c.m);
+  document.querySelectorAll('#trk i').forEach((d,i)=>d.classList.toggle('f',G.seen.has(OPTS[i].w)));
+  robot(c.m==='happy'?'excited':c.m==='hurt'?'sad':'confused');
+  say(c.m==='happy'?'우와, 마음이 제대로 전해졌어!':c.m==='hurt'?'으앙… 한 단어가 이렇게 커질 줄이야…':'이게 칭찬이야 놀림이야? 헷갈려!');
+}
+
+/* ===== 이벤트 연결 + 작은 놀거리 ===== */
+const quips=['삐빅! 간지러워!','스위치는 함부로 누르면 안 돼… 아니, 눌러도 돼!','나는 로봇이지만 마음은 있어!','치직… 방금 누가 내 말 가로챘어?','배터리 100%! 아마도!'];
+$('#go').onclick=()=>{initAudio();sfx.click();newCall()};
+$('#phone').onclick=answer;$('#replay').onclick=()=>{sfx.click();playBroken(false)};
+$('#send').onclick=send;$('#again').onclick=()=>{sfx.click();newCall()};
+rb.onclick=()=>{sfx.boing();say(quips[Math.random()*quips.length|0])};
+document.querySelectorAll('.tg').forEach(t=>t.onclick=()=>{t.classList.toggle('on');sfx.click();if(Math.random()<.4)say(quips[Math.random()*quips.length|0])});
+robot('idle');setKnob();requestAnimationFrame(loop);
+</script>
+</body></html>
